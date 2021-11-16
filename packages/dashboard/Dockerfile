@@ -1,4 +1,9 @@
 FROM node:14-alpine AS build
+
+RUN groupadd -g 2000 appuser && \
+useradd -r -u 2000 -g appuser appuser
+USER appuser
+
 WORKDIR /app
 COPY packages/api/src/schema ./packages/api/src/schema
 COPY packages/dashboard/ ./packages/dashboard
