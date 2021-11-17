@@ -1,9 +1,5 @@
 FROM node:14-alpine AS build
 
-RUN groupadd -g 2000 appuser && \
-useradd -r -u 2000 -g appuser appuser
-USER appuser
-
 WORKDIR /app
 COPY packages/api/ ./packages/api
 COPY packages/common/ ./packages/common
@@ -32,6 +28,13 @@ COPY packages/logger/package.json /app/packages/logger/package.json
 COPY package.json ./
 COPY yarn.lock ./
 ENV NODE_ENV=production
+
+RUN addgroup -g 2000 2000 && \
+adduser -S -u 2000 -G 2000 2000
+RUN chown -R 2000:2000 /app  
+USER 2000
+
 RUN yarn install --production --frozen-lockfile
 EXPOSE 4000
+
 CMD ["node", "packages/api/dist"]
